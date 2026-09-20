@@ -4,7 +4,7 @@ CC = g++
 CPPFLAGS = -O3 -gdwarf-3 -W -Wall -pedantic -std=c++17
 MAIN = main.o
 
-OBJS = graph.o graph_generator.o  benchmark.o graphio.o random.o  rcl.o
+OBJS = graph.o graph_generator.o  benchmark.o graphio.o random.o  rcl.o cheapest_insertion.o
 TESTOBJECTS = test_base.o test_graph.o test_graph_generator.o test_benchmark.o test_graphio.o 
 
 main: $(MAIN) $(OBJS)
@@ -50,6 +50,9 @@ graphio.o: include/helpers/graphio.h
 
 rcl.o: include/algorithms/rcl.h
 	$(CC) $(CPPFLAGS) -c src/algorithms/rcl.cpp
+
+cheapest_insertion.o: include/algorithms/cheapest_insertion.h
+	$(CC) $(CPPFLAGS) -c src/algorithms/cheapest_insertion.cpp
 
 clean:
 	rm -f ./bin/exec

@@ -26,7 +26,7 @@ std::tuple<int, int, int> CheapestInsertion::getInitialSubtour(Graph &graph)
 {
     int n = graph.getMaxM();
 
-    int v1, v2, v3;
+    int v1 = -1 , v2 = -1, v3 = -1;
     int bestCost = INT_MAX;
     for (int i = 0; i < n; i++)
     {

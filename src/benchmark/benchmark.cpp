@@ -8,6 +8,7 @@
 #include "../../include/helpers/graphio.h"
 #include "../../include/benchmark/benchmark.h"
 #include "../../include/algorithms/rcl.h"
+#include "../../include/algorithms/cheapest_insertion.h"
 
 
 Benchmark::Benchmark(){};
@@ -75,9 +76,7 @@ void writeResult(
     std::vector<int> &path,
     int cost,
     std::vector<int> &path_ini,
-    int cost_ini,
-    bool taNoPop,
-    bool taNoGir)
+    int cost_ini)
 {
     file << algorithm << ";";
     file << execution << ";";
@@ -105,9 +104,7 @@ void writeResult(
         }
     }
 
-    file << ';' << cost
-     << ';' << std::boolalpha << taNoPop
-     << ';' << taNoGir << '\n';
+    file << ';' << cost << '\n';
 }
 
 std::string getAlgorithmName(TspSolver *solver)
@@ -116,6 +113,8 @@ std::string getAlgorithmName(TspSolver *solver)
    
     if(dynamic_cast<RCL*>(solver)){
         return "Restricted Candidate List";
+    }else if(dynamic_cast<CheapestInsertion*>(solver)){
+        return "Cheapest Insertion";
     }
     
     return "AnotherGenetic";
@@ -137,14 +136,6 @@ void run(TspSolver *solver, std::string graphFilename, std::ofstream &file)
         auto start = std::chrono::high_resolution_clock::now();
         auto minPath = solver->run(graph); // RUN
 
-        bool taNoPop = false;
-        bool taNoGir = false;
-
-        // if (auto* transSolver = dynamic_cast<TransQTSPV4*>(solver)){
-        //     taNoPop = transSolver->taNoPop;
-        //     taNoGir = transSolver->taNoGir;
-        // }
-
         auto end = std::chrono::high_resolution_clock::now();
 
         int cost = tourLength(minPath, graph);
@@ -162,9 +153,7 @@ void run(TspSolver *solver, std::string graphFilename, std::ofstream &file)
             minPath,
             cost,
             solver->b_ini_p,
-            solver->b_ini_c,
-            taNoPop,
-            taNoGir
+            solver->b_ini_c
         );
 
         // std::cout << "End " << solverName << " execution. It took " << miliseconds << " miliseconds" << std::endl;
@@ -177,8 +166,10 @@ int Benchmark::evaluate()
     std::vector<TspSolver *> algorithms;
 
     RCL *rcl =  new RCL();
+    CheapestInsertion *ci = new CheapestInsertion();
    
     algorithms.push_back(rcl);
+    algorithms.push_back(ci);
 
 
 
@@ -238,6 +229,9 @@ int Benchmark::evaluate(std::string instance, std::string algorithmName)
      if (algorithmName.compare("rcl") == 0){
         // std::cout << "genetic" << std::endl;
         algorithm = new RCL();
+    } else  if (algorithmName.compare("cheapest_insertion") == 0){
+        // std::cout << "genetic" << std::endl;
+        algorithm = new CheapestInsertion();
     }
      
 
