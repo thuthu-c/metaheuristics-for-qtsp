@@ -1,7 +1,7 @@
 #ifndef _CHEAPEST_INSERTION_H_
 #define _CHEAPEST_INSERTION_H_
 
-#include "./genetic_algorithm.h"
+#include "./tsp_solver.h"
 #include "../data_structures/graph.h"
 
 class CheapestInsertion : public TspSolver
