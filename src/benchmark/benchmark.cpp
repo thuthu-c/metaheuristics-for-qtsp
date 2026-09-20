@@ -5,178 +5,12 @@
 #include "../../include/data_structures/graph.h"
 #include "../../include/benchmark/graph_generator.h"
 #include "../../include/algorithms/tsp_solver.h"
-#include "../../include/algorithms/nearest_neighborhood.h"
-#include "../../include/algorithms/memetic.h"
-#include "../../include/algorithms/cheapest_insertion.h"
-#include "../../include/algorithms/brute_force.h"
-#include "../../include/algorithms/branch_and_bound.h"
-#include "../../include/algorithms/tabu.h"
 #include "../../include/helpers/graphio.h"
 #include "../../include/benchmark/benchmark.h"
-#include "../../include/algorithms/genetic_improved.h"
-#include "../../include/algorithms/another_genetic.h"
-#include "../../include/algorithms/tabu_memetic.h"
 #include "../../include/algorithms/rcl.h"
 
 
 Benchmark::Benchmark(){};
-
-Benchmark::Benchmark(
-    int maxEvaluations,
-    int populationSize,
-    float crossoverRate,
-    float mutationRate
-)
-{
-    this->maxEvaluations = maxEvaluations;
-    this->populationSize = populationSize;
-    this->crossoverRate = crossoverRate;
-    this->mutationRate = mutationRate;
-}
-
-Benchmark::Benchmark(
-    int tabuTime,
-    int tabuAspirationTime,
-    int tabuMaxIter
-)
-{
-    this->tabuTime = tabuTime;
-    this->tabuAspirationTime = tabuAspirationTime;
-    this->tabuMaxIter = tabuMaxIter;
-}
-
-Benchmark::Benchmark(
-    int maxEvaluations,
-    int populationSize
-)
-{
-    this->maxEvaluations = maxEvaluations;
-    this->populationSize = populationSize;
-}
-
-Benchmark::Benchmark(
-    int maxEvaluations,
-    int populationSize,
-    double plasmidSize
-)
-{
-    this->maxEvaluations = maxEvaluations;
-    this->populationSize = populationSize;
-    this->plasmidSize = plasmidSize;
-
-}
-
-Benchmark::Benchmark(
-            int maxEvaluations,
-            int populationSize,
-            double probT,
-            double stepProb,
-            double plasmidSize
-        ){
-            this->maxEvaluations = maxEvaluations;
-            this->populationSize = populationSize;
-            this->probT = probT;
-            this->stepProb = stepProb;
-            this->plasmidSize = plasmidSize;
-        }
-
-Benchmark::Benchmark(
-    int maxEvaluations,
-    int populationSize,
-    float crossoverRate,
-    float mutationRate,
-    double probT,
-    double stepProb,
-    double plasmidSize
-) {
-    this->maxEvaluations = maxEvaluations;
-    this->populationSize = populationSize;
-    this->crossoverRate = crossoverRate;
-    this->mutationRate = mutationRate;
-    this->probT = probT;
-    this->stepProb = stepProb;
-    this->plasmidSize = plasmidSize;
-}
-
-Benchmark::Benchmark(
-    int maxEvaluations,
-    int populationSize,
-    float crossoverRate,
-    float mutationRate,
-    double probT,
-    double stepProb,
-    double plasmidSize,
-    int plasmidBank
-) {
-    this->maxEvaluations = maxEvaluations;
-    this->populationSize = populationSize;
-    this->crossoverRate = crossoverRate;
-    this->mutationRate = mutationRate;
-    this->probT = probT;
-    this->stepProb = stepProb;
-    this->plasmidSize = plasmidSize;
-    this->plasmidBank = plasmidBank;
-}
-
-Benchmark::Benchmark(
-            int maxEvaluations,
-            int populationSize,
-            double probT,
-            double stepProb,
-            double plasmidSize,
-            int plasmidBank
-        ){
-            this->maxEvaluations = maxEvaluations;
-            this->populationSize = populationSize;
-            this->probT = probT;
-            this->stepProb = stepProb;
-            this->plasmidSize = plasmidSize;
-            this->plasmidBank = plasmidBank;
-        }
-
-        Benchmark::Benchmark(
-            int maxEvaluations,
-            int populationSize,
-            double probT,
-            double stepProb,
-            double plasmidSize,
-            int plasmidBank,
-            double plasmidMin, 
-            double plasmidMax
-        ){
-            this->maxEvaluations = maxEvaluations;
-            this->populationSize = populationSize;
-            this->probT = probT;
-            this->stepProb = stepProb;
-            this->plasmidSize = plasmidSize;
-            this->plasmidBank = plasmidBank;
-            this->plasmidMin = plasmidMin;
-            this->plasmidMax = plasmidMax;
-        }
-
-        Benchmark::Benchmark(
-    int maxEvaluations,
-    int populationSize,
-    float crossoverRate,
-    float mutationRate,
-    double probT,
-    double stepProb,
-    double plasmidSize,
-    double plasmidMin,
-    double plasmidMax
-    ){
-
-    this->maxEvaluations = maxEvaluations;
-    this->populationSize = populationSize;
-    this->crossoverRate = crossoverRate;
-    this->mutationRate = mutationRate;
-    this->probT = probT;
-    this->stepProb = stepProb;
-    this->plasmidSize = plasmidSize;
-    this->plasmidMin = plasmidMin;
-    this->plasmidMax = plasmidMax;
-        
-    }
 
 
 Benchmark::~Benchmark(){}
@@ -231,14 +65,6 @@ int tourLength(std::vector<int> tour, Graph graph)
     return tourVal;
 }
 
-// bool verificaGir (TransQTSPV4 *solver){
-//         return solver->taNoGir;
-// }
-
-// bool verificaPop (TransQTSPV4 *solver){
-//         return solver->taNoPop;
-// }
-
 void writeResult(
     std::ofstream &file,
     std::string algorithm,
@@ -287,31 +113,8 @@ void writeResult(
 std::string getAlgorithmName(TspSolver *solver)
 {
 
-    if (dynamic_cast<BruteForce *>(solver))
-    {
-        return "BruteForce";
-    }
-    else if (dynamic_cast<CheapestInsertion *>(solver))
-    {
-        return "CheapestInsertion";
-    }  else if (dynamic_cast<Memetic*>(solver))
-    {
-        return "Memetic";
-    }
-    else if (dynamic_cast<Tabu *>(solver))
-    {
-        return "Tabu";
-    }
-    else if(dynamic_cast<BranchAndBound*>(solver)){
-        return "Branch and bound";
-    }
-    else if(dynamic_cast<GeneticImproved*>(solver)){
-        return "GeneticImproved";
-    }
-    else if(dynamic_cast<TabuMemetic*>(solver)){
-        return "Tabu Search Memetic";
-
-    }else if(dynamic_cast<RCL*>(solver)){
+   
+    if(dynamic_cast<RCL*>(solver)){
         return "Restricted Candidate List";
     }
     
@@ -320,12 +123,7 @@ std::string getAlgorithmName(TspSolver *solver)
 
 void run(TspSolver *solver, std::string graphFilename, std::ofstream &file)
 {
-
-    std::cout<<"vou runnar"<<std::endl;
-
     std::string solverName = getAlgorithmName(solver);
-
-    std::cout<<"o name "<< solverName <<std::endl;
 
     GraphIO graphio;
     graphio.read(graphFilename);
@@ -377,66 +175,17 @@ void run(TspSolver *solver, std::string graphFilename, std::ofstream &file)
 int Benchmark::evaluate()
 {
     std::vector<TspSolver *> algorithms;
-//     BruteForce *bf = new BruteForce();
-    // Tabu* tabu = new Tabu(this->tabuTime,this->tabuAspirationTime,this->tabuMaxIter);
-//     NearestNeighborhood *nb = new NearestNeighborhood();
-//     CheapestInsertion *ci = new CheapestInsertion();
-//     BranchAndBound *bnb = new BranchAndBound();
-// 
-//     GeneticImproved *gi = new GeneticImproved(
-//         this->maxEvaluations,
-//         this->populationSize,
-//         this->crossoverRate,
-//         this->mutationRate
-//     );
-// 
-    //  Memetic *mm = new Memetic(
-    //     this->maxEvaluations,
-    //     this->populationSize,
-    //     this->crossoverRate,
-    //     this->mutationRate
-    // );
-
-    // AnotherGenetic *agls = new AnotherGenetic(
-    //     this->populationSize,
-    //     this->maxEvaluations,
-    //     this->mutationRate,
-    //     this->crossoverRate,
-    //     true
-    // );
-//     AnotherGenetic *ag = new AnotherGenetic(
-//         this->populationSize,
-//         this->maxEvaluations,
-//         this->mutationRate,
-//         this->crossoverRate,
-//         false
-//     );
-    // TabuMemetic *tm = new TabuMemetic(
-    //     this->populationSize,
-    //     this->maxEvaluations,
-    //     this->mutationRate,
-    //     this->crossoverRate
-    // );
 
     RCL *rcl =  new RCL();
-    std::cout<<"eu me crio" << std::endl;
+   
     algorithms.push_back(rcl);
-   std::cout<<"eu me push0" << std::endl;
-    // algorithms.push_back(ci);
-    // algorithms.push_back(mm);
-    // algorithms.push_back(gi);
-    // algorithms.push_back(nb);
-    // algorithms.push_back(ci);
-    // algorithms.push_back(tabu);
- 
 
-    //  std::cout<< "eu sou o transv1  " << transV1->getProbT() << std::endl; 
-    // std::vector<std::string> graphsPath = generateGraphs(5, 14);
+
 
     // add header to csv
     std::ofstream outputFile;
     outputFile.open("result.csv", std::ios::app);
-    outputFile << "algorithm;execution;filename;num_vertex;initial_path;initial_cost;milisec;min_path;cost;taNoPop;taNoGir\n";
+    outputFile << "algorithm;execution;filename;num_vertex;initial_path;initial_cost;milisec;min_path;cost\n";
     outputFile.close();
 // 
 //     // run algorithms for every graph instances
@@ -468,12 +217,6 @@ int Benchmark::evaluate()
 
     for (auto algorithm : algorithms)
     {
-        // std::cout<< "o algoritmo é " << algorithm << std::endl; 
-        // ignores brute force
-        if (dynamic_cast<BruteForce *>(algorithm))
-        {
-            continue;
-        }
 
         for (auto g : graphsPath)
         {
@@ -490,38 +233,22 @@ int Benchmark::evaluate()
 int Benchmark::evaluate(std::string instance, std::string algorithmName)
 {
 
-    TspSolver* algorithm;
+    TspSolver* algorithm = nullptr;
 
-    if(algorithmName.compare("memetic") == 0) {
-        std::cout << "memetic" << std::endl;
-        
-        algorithm = new Memetic(
-            this->maxEvaluations,
-            this->populationSize,
-            this->crossoverRate,
-            this->mutationRate
-        );
-    } else if (algorithmName.compare("genetic") == 0){
-        // std::cout << "genetic" << std::endl;
-        algorithm = new GeneticImproved(
-            this->maxEvaluations,
-            this->populationSize,
-            this->crossoverRate,
-            this->mutationRate
-        );
-    }else if (algorithmName.compare("rcl") == 0){
+     if (algorithmName.compare("rcl") == 0){
         // std::cout << "genetic" << std::endl;
         algorithm = new RCL();
     }
-     else {
-        algorithm = new Tabu(this->tabuTime,this->tabuAspirationTime,this->tabuMaxIter);
-        std::cout << "Criando um tabu" << std::endl;
-    }
+     
 
     GraphIO graphio;
-    // std::cout << "A INSTÂNCIA É: " <<instance<< std::endl;
+    std::cout << "A INSTÂNCIA É: " <<instance<< std::endl;
     graphio.read(instance);
     Graph graph = graphio.getGraph();
+
+    if (algorithm == nullptr) {
+    throw std::runtime_error("Algoritmo não foi instanciado!"); 
+}
 
     auto cost = tourLength(algorithm->run(graph), graph);
     // irace `target-runner` expects this output

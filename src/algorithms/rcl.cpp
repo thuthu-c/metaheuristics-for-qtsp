@@ -29,7 +29,7 @@ std::tuple<int, int, int> RCL::getInitialSubtour(Graph &graph)
 {
     int n = graph.getMaxM();
 
-    int v1, v2, v3;
+    int v1 = -1, v2 = -1, v3 = -1;
     int bestCost = INT_MAX;
     for (int i = 0; i < n; i++)
     {
@@ -96,8 +96,6 @@ std::tuple<int, int, int> RCL::getInitialSubtour(Graph &graph)
 
 std::vector<int> RCL::run(Graph &graph)
 {
-
-    std::cout<<"to entrando no rcl sim" << std::endl;
     alpha= graph.getNumVertex()*0.5;
     auto initial = this->getInitialSubtour(graph);
     int v1 = std::get<0>(initial);
@@ -117,8 +115,7 @@ std::vector<int> RCL::run(Graph &graph)
 
     while (verticesToCheck.size() > 0) {
         int bestInsertionCost = INT_MAX;
-        int bestInsertionVertex = -1;
-        int bestInsertionIndex = -1;
+    
 
         for (int k : verticesToCheck) {
             for (auto i{0u}; i < tour.size(); i++) {
@@ -128,8 +125,6 @@ std::vector<int> RCL::run(Graph &graph)
 
                 if (localEval < bestInsertionCost) {
                     bestInsertionCost = localEval;
-                    bestInsertionVertex = k;
-                    bestInsertionIndex = i;
                 }
 
                 rcl.emplace_back(std::make_tuple(localEval, k, i));
@@ -151,11 +146,10 @@ std::vector<int> RCL::run(Graph &graph)
             std::max(0, static_cast<int>(alpha) - 1));
         std::uniform_int_distribution<int> distribution(0, lastRclIndex);
         int randIdx = distribution(engine);
-        std::cout<<"o idx eh " << randIdx << std::endl;
         std::tuple<int, int,int> electedCandidate = rcl[randIdx];
         const int idxElected = std::get<2>(electedCandidate);
         const int vertexElected = std::get<1>(electedCandidate);
-        std::cout<< "o idx do eleito eh " << idxElected << " o vertice eh " <<  vertexElected << std::endl;
+        
 
         
         tour.insert(tour.begin() + idxElected,  vertexElected);
