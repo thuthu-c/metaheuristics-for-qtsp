@@ -10,6 +10,8 @@ private:
     int eval(std::vector<int> &tour, Graph &graph);
     std::tuple<int, int, int> getInitialSubtour(Graph &graph);
     std::vector<int> getCheapestNeighbors(Graph &graph);
+    int maxEvaluations{10000}; 
+    int numEvaluations{0}; 
 
 public:
     std::vector<int> run(Graph &graph);

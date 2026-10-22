@@ -19,6 +19,7 @@ int CheapestInsertion::eval(std::vector<int> &tour, Graph &graph)
         tourVal += graph.custo[tour[j]][tour[j + 1]][tour[j + 2]];
     }
 
+    numEvaluations++;
     return tourVal;
 }
 
@@ -99,7 +100,7 @@ std::vector<int> CheapestInsertion::run(Graph &graph)
     int v3 = std::get<2>(initial);
 
     std::vector<int> tour = {v1, v2, v3};
-
+    
     std::vector<int> verticesToCheck;
     for (int i = 0; i < graph.getMaxM(); ++i) {
         if (std::find(tour.begin(), tour.end(), i) == tour.end()) {

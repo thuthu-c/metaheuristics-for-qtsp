@@ -9,6 +9,8 @@
 #include "../../include/benchmark/benchmark.h"
 #include "../../include/algorithms/rcl.h"
 #include "../../include/algorithms/cheapest_insertion.h"
+#include "../../include/algorithms/grasp.h"
+#include "../../include/algorithms/4_opt.h"
 
 
 Benchmark::Benchmark(){};
@@ -116,13 +118,24 @@ std::string getAlgorithmName(TspSolver *solver)
     }else if(dynamic_cast<CheapestInsertion*>(solver)){
         return "Cheapest Insertion";
     }
+    else if(dynamic_cast<GRASP*>(solver)){
+        return "Grasp";
+    }
+    else if(dynamic_cast<FourOpt*>(solver)){
+        return "4opt";
+    }
     
     return "AnotherGenetic";
 }
 
-void run(TspSolver *solver, std::string graphFilename, std::ofstream &file)
+void run(TspSolver *solver, std::string graphFilename, std::ofstream &file, bool use_run_two = false)
 {
     std::string solverName = getAlgorithmName(solver);
+
+    // Se for o RCL executando a versão 2, adiciona o sufixo no nome
+    if (dynamic_cast<RCL*>(solver) && use_run_two) {
+        solverName += "_v2"; // Ou "_run_two"
+    }
 
     GraphIO graphio;
     graphio.read(graphFilename);
@@ -130,22 +143,26 @@ void run(TspSolver *solver, std::string graphFilename, std::ofstream &file)
 
     for (int i = 1; i <= 30; i++)
     {
-        // std::cout << "Start running algorithm " << solverName << " for " << graph.getMaxM() << "in execution " << i << std::endl;
-
-        // https://en.cppreference.com/w/cpp/chrono/duration/duration_cast
         auto start = std::chrono::high_resolution_clock::now();
-        auto minPath = solver->run(graph); // RUN
+
+        std::vector<int> minPath;
+        auto *rclSolver = dynamic_cast<RCL*>(solver);
+
+        if (rclSolver && use_run_two) {
+            minPath = rclSolver->run_two(graph);
+        } else {
+            minPath = solver->run(graph);
+        }
 
         auto end = std::chrono::high_resolution_clock::now();
-
-        int cost = tourLength(minPath, graph);
+        int cost = tourLength(minPath, graph); 
 
         long double miliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-
+        
 
         writeResult(
             file,
-            getAlgorithmName(solver),
+            solverName,
             i,
             graphFilename,
             graph.getMaxM(),
@@ -167,9 +184,13 @@ int Benchmark::evaluate()
 
     RCL *rcl =  new RCL();
     CheapestInsertion *ci = new CheapestInsertion();
+    GRASP *grasp = new GRASP (); 
+    FourOpt *fourOpt = new FourOpt();
    
     algorithms.push_back(rcl);
     algorithms.push_back(ci);
+    algorithms.push_back(grasp); 
+    algorithms.push_back(fourOpt);
 
 
 
@@ -178,17 +199,6 @@ int Benchmark::evaluate()
     outputFile.open("result.csv", std::ios::app);
     outputFile << "algorithm;execution;filename;num_vertex;initial_path;initial_cost;milisec;min_path;cost\n";
     outputFile.close();
-// 
-//     // run algorithms for every graph instances
-    // for (auto algorithm : algorithms)
-    // {
-    //     for (std::string graphPath : graphsPath)
-    //     {
-    //         outputFile.open("result.csv", std::ios::app);
-    //         run(algorithm, graphPath, outputFile);
-    //         outputFile.close();
-    //     }
-    // }
 
     // running big graphs for big instances (ignoring brute force)
     std::vector<std::string> graphsPath = generateGraphs(50, 50);
@@ -212,7 +222,7 @@ int Benchmark::evaluate()
         for (auto g : graphsPath)
         {
             outputFile.open("result.csv", std::ios::app);
-
+            if(dynamic_cast<RCL*>(algorithm)) run(algorithm, g, outputFile, true);
             run(algorithm, g, outputFile);
             outputFile.close();
         }
@@ -232,6 +242,14 @@ int Benchmark::evaluate(std::string instance, std::string algorithmName)
     } else  if (algorithmName.compare("cheapest_insertion") == 0){
         // std::cout << "genetic" << std::endl;
         algorithm = new CheapestInsertion();
+    }
+     else  if (algorithmName.compare("grasp") == 0){
+        // std::cout << "genetic" << std::endl;
+        algorithm = new GRASP();
+    }
+    else  if (algorithmName.compare("4opt") == 0){
+        // std::cout << "genetic" << std::endl;
+        algorithm = new FourOpt();
     }
      
 
