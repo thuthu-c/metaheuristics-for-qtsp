@@ -1,0 +1,2 @@
+PROBLEM_FILE = test.tsp
+OUTPUT_TOUR_FILE = test.tour

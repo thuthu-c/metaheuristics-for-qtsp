@@ -1,0 +1,12 @@
+NAME : test4.80.tour
+COMMENT : Length = 80
+COMMENT : Found by LKH-3 [Keld Helsgaun] Fri Oct 23 11:36:19 2026
+TYPE : TOUR
+DIMENSION : 4
+TOUR_SECTION
+1
+2
+4
+3
+-1
+EOF

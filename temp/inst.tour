@@ -1,0 +1,58 @@
+NAME : temp_instance.0.tour
+COMMENT : Length = 0
+COMMENT : Found by LKH-3 [Keld Helsgaun] Fri Oct 23 20:21:50 2026
+TYPE : TOUR
+DIMENSION : 50
+TOUR_SECTION
+1
+31
+19
+39
+5
+4
+34
+50
+16
+28
+23
+18
+17
+38
+48
+43
+36
+41
+6
+9
+24
+30
+8
+25
+27
+22
+45
+13
+20
+10
+40
+37
+7
+32
+44
+47
+42
+12
+3
+26
+35
+29
+33
+49
+15
+11
+2
+21
+14
+46
+-1
+EOF

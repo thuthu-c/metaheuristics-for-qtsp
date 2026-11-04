@@ -1,0 +1,5 @@
+PROBLEM_FILE = ./temp/qtsp_inst.atsp
+OUTPUT_TOUR_FILE = ./temp/qtsp_inst.tour
+RUNS = 1
+TRACE_LEVEL = 0
+PRECISION = 1

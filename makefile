@@ -4,7 +4,7 @@ CC = g++
 CPPFLAGS = -O3 -gdwarf-3 -W -Wall -pedantic -std=c++17
 MAIN = main.o
 
-OBJS = graph.o graph_generator.o  benchmark.o graphio.o random.o  rcl.o cheapest_insertion.o grasp.o 4_opt.o 4_opt_util.o
+OBJS = graph.o graph_generator.o  benchmark.o graphio.o random.o  rcl.o cheapest_insertion.o grasp.o 4_opt.o 4_opt_util.o lkh_solver.o
 TESTOBJECTS = test_base.o test_graph.o test_graph_generator.o test_benchmark.o test_graphio.o 
 
 main: $(MAIN) $(OBJS)
@@ -62,6 +62,9 @@ grasp.o: include/algorithms/grasp.h
 
 4_opt_util.o: include/algorithms/4_opt_util.h
 	$(CC) $(CPPFLAGS) -c src/algorithms/4_opt_util.cpp
+
+lkh_solver.o: include/algorithms/lkh_solver.h
+	$(CC) $(CPPFLAGS) -c src/algorithms/lkh_solver.cpp
 
 clean:
 	rm -f ./bin/exec
