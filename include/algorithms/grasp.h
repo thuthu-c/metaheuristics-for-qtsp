@@ -7,7 +7,7 @@ class GRASP : public TspSolver
 {
     std::tuple<int, int, int> getInitialSubtour(Graph &graph);
     int alpha;
-    int maxEvaluations{100000}; 
+    int maxEvaluations{5000000}; 
     int numEvaluations{0}; 
 public:
     int eval(std::vector<int> &tour, Graph &graph);

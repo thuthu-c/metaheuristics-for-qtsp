@@ -99,6 +99,9 @@ std::vector<int> CheapestInsertion::run(Graph &graph)
     int v2 = std::get<1>(initial);
     int v3 = std::get<2>(initial);
 
+    int numEvaluations{0};
+
+    int maxEvaluations = 5000000;
     std::vector<int> tour = {v1, v2, v3};
     
     std::vector<int> verticesToCheck;
@@ -108,13 +111,14 @@ std::vector<int> CheapestInsertion::run(Graph &graph)
         }
     }
 
-    while (verticesToCheck.size() > 0) {
+    while (verticesToCheck.size() > 0 && numEvaluations < maxEvaluations) {
         int bestInsertionCost = INT_MAX;
         int bestInsertionVertex = -1;
         int bestInsertionIndex = -1;
 
         for (int k : verticesToCheck) {
             for (auto i{0u}; i < tour.size(); i++) {
+                if (numEvaluations >= maxEvaluations) goto end_search;
                 std::vector<int> tmpTour = tour;
                 tmpTour.insert(tmpTour.begin() + i, k);
 
@@ -132,6 +136,6 @@ std::vector<int> CheapestInsertion::run(Graph &graph)
 
         verticesToCheck.erase(std::remove(verticesToCheck.begin(), verticesToCheck.end(), bestInsertionVertex), verticesToCheck.end());
     }
-
+    end_search:
     return tour;
 }

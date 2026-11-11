@@ -131,7 +131,7 @@ std::vector<int> GRASP::run(Graph &graph){
 
     
     while(numEvaluations < maxEvaluations){
-        std::vector<int> solution_curr = rcl.run(graph);
+        std::vector<int> solution_curr = rcl.runCheapestInsertion(graph, 0.15);
         numEvaluations += rcl.getNumEvaluations();
         
         int current_cost = eval(solution_curr, graph);

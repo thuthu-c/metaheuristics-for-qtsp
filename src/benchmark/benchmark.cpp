@@ -10,6 +10,8 @@
 #include "../../include/algorithms/rcl.h"
 #include "../../include/algorithms/cheapest_insertion.h"
 #include "../../include/algorithms/grasp.h"
+#include "../../include/algorithms/grasp_shiftvnd.h"
+#include "../../include/algorithms/grasp_swapvnd.h"
 #include "../../include/algorithms/4_opt.h"
 
 
@@ -118,6 +120,12 @@ std::string getAlgorithmName(TspSolver *solver)
     }else if(dynamic_cast<CheapestInsertion*>(solver)){
         return "Cheapest Insertion";
     }
+    else if(dynamic_cast<GRASPSWAPVND*>(solver)){
+        return "GraspSwapVND";
+    }
+    else if(dynamic_cast<GRASPSHIFTVND*>(solver)){
+        return "GraspShiftVND";
+    }
     else if(dynamic_cast<GRASP*>(solver)){
         return "Grasp";
     }
@@ -186,11 +194,15 @@ int Benchmark::evaluate()
     CheapestInsertion *ci = new CheapestInsertion();
     GRASP *grasp = new GRASP (); 
     FourOpt *fourOpt = new FourOpt();
+    GRASPSHIFTVND *graspshift = new GRASPSHIFTVND();
+    GRASPSWAPVND *graspswap = new GRASPSWAPVND();
    
     algorithms.push_back(rcl);
     algorithms.push_back(ci);
     algorithms.push_back(grasp); 
-    algorithms.push_back(fourOpt);
+    algorithms.push_back(graspshift);
+    algorithms.push_back(graspswap);
+    // algorithms.push_back(fourOpt);
 
 
 
@@ -246,6 +258,10 @@ int Benchmark::evaluate(std::string instance, std::string algorithmName)
      else  if (algorithmName.compare("grasp") == 0){
         // std::cout << "genetic" << std::endl;
         algorithm = new GRASP();
+    }
+    else  if (algorithmName.compare("grasp_shift_vnd") == 0){
+        // std::cout << "genetic" << std::endl;
+        algorithm = new GRASPSHIFTVND();
     }
     else  if (algorithmName.compare("4opt") == 0){
         // std::cout << "genetic" << std::endl;

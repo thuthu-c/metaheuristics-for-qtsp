@@ -205,8 +205,8 @@ void run4opt(int argc, char *argv[]){
 
 int main(int argc, char *argv[])
 {
-    runRcl(argc, argv);
-    // runGrasp(argc, argv);
+    // runRcl(argc, argv);
+    runGrasp(argc, argv);
     // run4opt(argc, argv);
     return 0;
 }

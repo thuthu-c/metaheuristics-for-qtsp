@@ -133,6 +133,9 @@ std::vector<int> RCL::run_two(Graph &graph){
     int v2 = std::get<1>(initial);
     int v3 = std::get<2>(initial);
 
+    int numEvaluations{0};
+    int maxEvaluations = 100000;
+
     std::vector<int> tour = {v1, v2, v3}; 
     std::vector<int> verticesToCheck;
     for (int i = 0; i < graph.getMaxM(); ++i) {
@@ -143,12 +146,13 @@ std::vector<int> RCL::run_two(Graph &graph){
 
     std::vector<std::tuple<int, int, int>> rcl;
 
-    while (verticesToCheck.size() > 0) {
+    while (verticesToCheck.size() > 0 && numEvaluations < maxEvaluations) {
         int bestInsertionCost = INT_MAX;
     
 
         for (int k : verticesToCheck) {
             for (auto i{0u}; i < tour.size(); i++) {
+                 if (numEvaluations >= maxEvaluations) goto end_search;
                 std::vector<int> tmpTour = tour;
                 tmpTour.insert(tmpTour.begin() + i, k);
                 int localEval = calculateInsertionCost(tmpTour, i, k);
@@ -188,8 +192,72 @@ std::vector<int> RCL::run_two(Graph &graph){
         rcl.clear();
     }
 
+    end_search:
     return tour;
 
+}
+// Estrutura para representar um candidato a inserção
+struct Candidate {
+    int node;
+    int index;
+    int delta;
+};
+
+std::vector<int> RCL::runCheapestInsertion(Graph &graph, double alpha) {
+    auto initial = getInitialSubtour(graph); // (v1, v2, v3)
+    std::vector<int> tour = {std::get<0>(initial), std::get<1>(initial), std::get<2>(initial)};
+    
+    std::vector<int> unvisited;
+    for (int i = 0; i < graph.getMaxM(); i++) {
+        if (i != std::get<0>(initial) && i != std::get<1>(initial) && i != std::get<2>(initial)) {
+            unvisited.push_back(i);
+        }
+    }
+
+    while (!unvisited.empty()) {
+        std::vector<Candidate> candidates;
+        int minDelta = INT_MAX;
+        int maxDelta = INT_MIN;
+
+        int n = tour.size();
+        for (int k : unvisited) {
+            for (int i = 0; i < n; i++) {
+                int prev2 = tour[(i - 2 + n) % n];
+                int prev1 = tour[(i - 1 + n) % n];
+                int curr  = tour[i];
+                int next1 = tour[(i + 1) % n];
+
+                int removedCost = graph.custo[prev2][prev1][curr] + graph.custo[prev1][curr][next1];
+                int addedCost   = graph.custo[prev2][prev1][k]    + graph.custo[prev1][k][curr] + graph.custo[k][curr][next1];
+
+                int delta = addedCost - removedCost;
+                candidates.push_back({k, i, delta});
+
+                if (delta < minDelta) minDelta = delta;
+                if (delta > maxDelta) maxDelta = delta;
+            }
+        }
+
+        // Limiar de corte da RCL usando o parâmetro alpha (ex: alpha = 0.2)
+        int cutoff = minDelta + alpha * (maxDelta - minDelta);
+        
+        std::vector<Candidate> rcl;
+        for (const auto& c : candidates) {
+            if (c.delta <= cutoff) {
+                rcl.push_back(c);
+            }
+        }
+
+        // Sorteia um candidato da RCL
+        int chosenIdx = rand() % rcl.size();
+        Candidate chosen = rcl[chosenIdx];
+
+        // Insere na rota na posição sorteada
+        tour.insert(tour.begin() + chosen.index, chosen.node);
+        unvisited.erase(std::remove(unvisited.begin(), unvisited.end(), chosen.node), unvisited.end());
+    }
+
+    return tour;
 }
 std::vector<int> RCL::run(Graph &graph) 
 {
@@ -200,6 +268,8 @@ std::vector<int> RCL::run(Graph &graph)
     int v1 = std::get<0>(initial);
     int v2 = std::get<1>(initial);
     int v3 = std::get<2>(initial);
+     int numEvaluations{0};
+    int maxEvaluations = 100000;
 
     std::vector<int> tour = {v1, v2, v3};
     std::vector<int> verticesToCheck;
@@ -217,6 +287,7 @@ std::vector<int> RCL::run(Graph &graph)
 
         for (int k : verticesToCheck) {
             for (auto i{0u}; i < tour.size(); i++) {
+                 if (numEvaluations >= maxEvaluations) goto end_search;
                 std::vector<int> tmpTour = tour;
                 tmpTour.insert(tmpTour.begin() + i, k);
                 int localEval = eval(tmpTour, graph);
@@ -256,5 +327,6 @@ std::vector<int> RCL::run(Graph &graph)
         rcl.clear();
     }
 
+    end_search:
     return tour;
 }
